@@ -36,11 +36,14 @@ tests = TestList
         , "str 2" ~: str (Add[N 1,N(-2),N(-3)]) ~?= "1-2-3"
         , "str 3" ~: str (Mul[N 1,N 2 ,N 3 ]) ~?= "1*2*3"
         , "str 4" ~: str (Add[N 1,Mul[N 2,N 3]]) ~?= "1+2*3"
+        , "str 5" ~: str (Add[Add[N 1,N 2],N 3]) ~?= "(1+2)+3"
+        , "str 6" ~: str (Mul[Add[N 1,N 2],N 3]) ~?= "(1+2)*3"
+        , "str 7" ~: str (Mul[Mul[N 1,N 2],N 3]) ~?= "(1*2)*3"
         ]
 
--- main = do
---     runTestText (putTextToHandle stderr False) tests
 main = do
-    let f = Mul[Add[N 1,N 2],N 3]
-    print $ f
-    print $ str f
+    runTestText (putTextToHandle stderr False) tests
+-- main = do
+--     let f = Mul[Add[N 1,N 2],N 3]
+--     print $ f
+--     print $ str f
