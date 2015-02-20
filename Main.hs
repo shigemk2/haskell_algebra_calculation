@@ -16,14 +16,17 @@ isneg (N n) | n < 0 = True
 isneg _ = False
 
 str (N x) = show x
-str (Add []) = ""
-str (Add [x]) = str x
+str (Add [])       = ""
+str (Add [Add xs]) = "(" ++ str (Add xs) ++ ")"
+str (Add [x])      = str x
 str (Add (x:y:zs))
-    | isneg y = str x ++ str (Add (y:zs))
-str (Add (x:xs)) = str x ++ "+" ++ str (Add xs)
-str (Mul []) = ""
-str (Mul [x]) = str x
-str (Mul (x:xs)) = str x ++ "*" ++ str (Mul xs)
+    | isneg y      = str (Add [x])        ++ str (Add (y:zs))
+str (Add (x:xs))   = str (Add [x]) ++ "+" ++ str (Add xs)
+str (Mul [])       = ""
+str (Mul [Add xs]) = "(" ++ str (Add xs) ++ ")"
+str (Mul [Mul xs]) = "(" ++ str (Mul xs) ++ ")"
+str (Mul [x])      = str x
+str (Mul (x:xs))   = str (Mul [x]) ++ "*" ++ str (Mul xs)
 
 tests = TestList
         [ "eval 1" ~: eval (Add[N 1,N 1 ]) ~?= 1+1
