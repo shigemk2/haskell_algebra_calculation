@@ -3,7 +3,8 @@ module Main where
 import Test.HUnit
 import System.IO
 
-data Expr = N Int
+data Expr = N   Int
+          | Var String
           | Add [Expr]
           | Mul [Expr]
           deriving (Show, Eq)
@@ -27,6 +28,7 @@ str (Mul [Add xs]) = "(" ++ str (Add xs) ++ ")"
 str (Mul [Mul xs]) = "(" ++ str (Mul xs) ++ ")"
 str (Mul [x])      = str x
 str (Mul (x:xs))   = str (Mul [x]) ++ "*" ++ str (Mul xs)
+str (Var name)     = name
 
 tests = TestList
         [ "eval 1" ~: eval (Add[N 1,N 1 ]) ~?= 1+1
@@ -43,6 +45,7 @@ tests = TestList
         , "str 6" ~: str (Mul[Add[N 1,N 2],N 3]) ~?= "(1+2)*3"
         , "str 7" ~: str (Mul[Mul[N 1,N 2],N 3]) ~?= "(1*2)*3"
         , "equal" ~: Add[N 1,N 2] ~?= Add[N 1,N 2]
+        , "x 1" ~: str (Add [Var "x",N 1]) ~?= "x+1"
         ]
 
 main = do
